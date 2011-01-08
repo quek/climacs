@@ -216,3 +216,43 @@ as a default."
   :divider
   `(com-switch-to-view ,*unsupplied-argument-marker*)
   `(com-kill-view ,*unsupplied-argument-marker*))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Commands for switching/find-file in other window
+
+(define-command (com-switch-to-view-other-window :name t :command-table window-table)
+    ((view 'view :default (or (cadr (views *application-frame*)) (any-view))))
+  "Prompt for a view name and switch to that view in other window.
+If the a view with that name does not exist, create a buffer-view
+with the name and switch to it. Uses the name of the next
+view (if any) as a default."
+  (when (= 1 (length (windows *application-frame*)))
+    (com-split-window-horizontally t))
+  (com-other-window)
+  (com-switch-to-view view))
+
+(set-key `(com-switch-to-view-other-window ,*unsupplied-argument-marker*)
+	 'window-table
+	 '((#\x :control) (#\4) (#\b)))
+
+(define-command (com-find-file-other-window :name t :command-table window-table)
+    ((filepath 'pathname
+               :prompt "Find File in other window: "
+               :prompt-mode :raw
+               :default (esa-io::directory-of-current-buffer)
+               :default-type 'pathname
+               :insert-default t))
+  "Prompt for a filename then edit that file in other window.
+If a buffer is already visiting that file, switch to that
+buffer. Does not create a file if the filename given does not
+name an existing file."
+  (when (= 1 (length (windows *application-frame*)))
+    (com-split-window-horizontally t))
+  (com-other-window)
+  (esa-io:com-find-file filepath))
+
+(set-key `(com-find-file-other-window ,*unsupplied-argument-marker*)
+	 'window-table
+	 '((#\x :control) (#\4) (#\f)))
