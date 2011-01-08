@@ -57,7 +57,19 @@
                  (*info-bg-color* +darkslategray+)
                  (*info-fg-color* +gray+)
                  (*mini-bg-color* +black+)
-                 (*mini-fg-color* +white+))
+                 (*mini-fg-color* +white+)
+                 ;; setup the drawing-options
+                 (*string-drawing-options*
+                  (make-drawing-options :face (make-face :ink +light-salmon+)))
+                 (*comment-drawing-options*
+                  (make-drawing-options :face (make-face :ink +chocolate1+)))
+                 (*keyword-drawing-options*
+                  (make-drawing-options :face (make-face :ink +light-steel-blue+)))
+                 (*special-variable-drawing-options*
+                  (make-drawing-options :face (make-face :ink +light-goldenrod+)))
+                 (*special-operator-drawing-options*
+                  (make-drawing-options :face (make-face :ink +cyan1+
+                                                         :style (make-text-style nil :bold nil)))))
              (apply #'climacs-common nil :new-process nil args))))
     (if new-process
         (clim-sys:make-process #'run :name process-name)
