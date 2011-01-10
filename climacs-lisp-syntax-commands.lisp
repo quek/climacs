@@ -168,6 +168,18 @@ Definition command was issued."
   (evaluating-interactively
     (compile-definition-interactively (current-view) (point))))
 
+(define-command (com-describe-symbol :name t :command-table climacs-lisp-table)
+    ()
+  "Describe symbol at point."
+  (let* ((token (drei-lisp-syntax:this-form (drei:current-syntax) (point)))
+         (this-symbol (form-to-object (current-syntax) token)))
+    (when (and this-symbol (symbolp this-symbol))
+      (let ((view (climacs-core:switch-or-move-to-view (current-window) "*Describe*"))
+            (describe (with-output-to-string (out)
+                        (describe this-symbol out))))
+        (set-syntax view "Lisp")
+        (insert-sequence (point) describe)))))
+
 (esa:set-key 'com-eval-defun
              'climacs-lisp-table
              '((#\x :control :meta)))
@@ -203,3 +215,7 @@ Definition command was issued."
 (set-key 'com-compile-definition
          'pane-lisp-table
          '((#\c :control) (#\c :control)))
+
+(set-key 'com-describe-symbol
+         'climacs-lisp-table
+         '((#\c :control) (#\d :control) (#\d)))
