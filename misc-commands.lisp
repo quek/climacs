@@ -64,9 +64,13 @@ FIXME: gives no information at end of buffer."
 	 'info-table
 	 '((#\x :control) (#\=)))
 
-(define-command (com-browse-url :name t :command-table base-table) 
+(define-presentation-type url () :inherit-from 'string)
+
+(define-command (com-browse-url :name t :command-table base-table)
     ((url 'url :prompt "Browse URL"))
   (declare (ignorable url))
+  #+ (and sbcl linux)
+     (sb-ext:run-program "/usr/bin/opera" `(,url) :wait nil)
   #+ (and sbcl darwin)
      (sb-ext:run-program "/usr/bin/open" `(,url) :wait nil)
   #+ (and openmcl darwin)
