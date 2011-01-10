@@ -64,6 +64,12 @@ FIXME: gives no information at end of buffer."
 	 'info-table
 	 '((#\x :control) (#\=)))
 
+(define-command (com-pwd :name t :command-table info-table) ()
+  "Print working directory."
+  (let ((filepath (or (filepath (buffer (current-view)))
+                      *default-pathname-defaults*)))
+    (display-message (directory-namestring filepath))))
+
 (define-presentation-type url () :inherit-from 'string)
 
 (define-command (com-browse-url :name t :command-table base-table)
