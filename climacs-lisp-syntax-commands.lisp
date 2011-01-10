@@ -180,6 +180,15 @@ Definition command was issued."
         (set-syntax view "Lisp")
         (insert-sequence (point) describe)))))
 
+(define-command (com-hyperspec-lookup :name t :command-table climacs-lisp-table)
+    ()
+  "Lookup Hyperspec."
+  (let* ((token (this-form (current-syntax) (point)))
+         (this-symbol (form-to-object (current-syntax) token)))
+    (when (and this-symbol (symbolp this-symbol))
+      (climacs-commands::com-browse-url
+       (hyperspec:lookup (string-downcase (symbol-name this-symbol)))))))
+
 (esa:set-key 'com-eval-defun
              'climacs-lisp-table
              '((#\x :control :meta)))
@@ -219,3 +228,7 @@ Definition command was issued."
 (set-key 'com-describe-symbol
          'climacs-lisp-table
          '((#\c :control) (#\d :control) (#\d)))
+
+(set-key 'com-hyperspec-lookup
+         'climacs-lisp-table
+         '((#\c :control) (#\d :control) (#\h)))
